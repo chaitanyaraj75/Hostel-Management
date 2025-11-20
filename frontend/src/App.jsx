@@ -7,6 +7,7 @@ import Home from './routes/Home';
 import About from './routes/About';
 import Login from './routes/Login';
 import Register from './routes/Register';
+import Rooms from './routes/Rooms';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -17,6 +18,7 @@ function App() {
       <Route path="/about" element={<About />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />}/>
+      <Route path="/rooms" element={<Rooms />}/>
       {/* <Route path="/:type/:id" element={<Details />} /> */}
       {/* <Route path="/search/:query" element={<Search />} /> */}
     </Routes>
