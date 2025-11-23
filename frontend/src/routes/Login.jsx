@@ -1,12 +1,16 @@
 import { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-function Login() {
+function Login({setUser}) {
     const [loginType, setLoginType] = useState('student');
     const [formData, setFormData] = useState({
         student_id: '',
         password: ''
     });
     const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -16,10 +20,20 @@ function Login() {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         // Handle login logic here based on loginType
+        // alert(`Logging in as ${loginType}`);
         console.log(`${loginType} login:`, formData);
+        try{
+            const response=await axios.post('http://localhost:5000/api/auth/login',formData);
+            console.log('Fetched user:',response);
+            setUser(response.data);
+            navigate('/');
+        }
+        catch(err){
+            setError("Invalid Credentials");
+        }
     };
 
     return (
@@ -70,7 +84,7 @@ function Login() {
                 <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-8">
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div>
-                            <label htmlFor="studentid" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="student_id" className="block text-sm font-medium text-gray-700 mb-2">
                                 {loginType === 'student' ? 'Student Id' : 'Admin Id'}
                             </label>
                             <div className="relative">
@@ -155,6 +169,7 @@ function Login() {
                         >
                             {loginType === 'student' ? 'Sign in as Student' : 'Sign in as Admin'}
                         </button>
+                        {error && <p className="text-red-500 text-sm mt-4 text-center">{error}</p>}
                     </form>
 
                     {/* Divider */}
