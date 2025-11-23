@@ -28,7 +28,7 @@ const generateToken = (id) => {
 
 // Register Route
 router.post('/register', async (req, res) => {
-    const { name, student_id, email, mobile_no, password, branch, year } = req.body;
+    const { name,email, student_id,year, mobile_no, branch,password } = req.body;
     console.log(req.body);
     if(!name || !student_id || !email || !mobile_no || !password || !branch || !year) {
         return res.status(400).json({ message: "Please fill all the fields" });

@@ -200,7 +200,7 @@ function Login({setUser}) {
 
                 {/* Footer */}
                 <div className="text-center text-sm text-gray-500">
-                    <p>© 2024 Hostel Management System. All rights reserved.</p>
+                    <p>© {new Date().getFullYear()} Hostel Management System. All rights reserved.</p>
                 </div>
             </div>
         </div>

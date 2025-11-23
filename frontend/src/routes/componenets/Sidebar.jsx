@@ -1,5 +1,5 @@
 function Sidebar() {
-    const sidebarItems = ["Dashboard", "Rooms", "Allotment", "Students", "Complaints", "Meals"];
+    const sidebarItems = ["Dashboard", "Rooms", "Allotment", "Students", "Complaints", "Meals", "Logout"];
 
     return (
         <aside className="w-60 h-screen bg-white border-r p-4 flex flex-col shadow">

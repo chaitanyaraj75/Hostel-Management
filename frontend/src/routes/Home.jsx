@@ -1,6 +1,8 @@
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import Header from "./componenets/Header";
 import Sidebar from "./componenets/Sidebar";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const occupancyData = [
     { name: "Hostel 1", value: 50, color: "#2563EB" }, // Blue
@@ -18,10 +20,21 @@ const complaintsData = [
     { name: "Open", value: 62 },
 ];
 
-const menu = ["Dashboard", "Rooms",, "Attendance", "Accounts", "Maintenance"];
+const menu = ["Dashboard", "Rooms", "Attendance", "Accounts", "Maintenance"];
 
-
-export default function Dashboard() {
+function Dashboard({user,setUser}) {
+    const handleLogout=async()=>{
+        try{
+            await axios.post('http://localhost:5000/api/auth/logout');
+            setUser(null);
+        }catch(error){
+            console.error('Error during logout:',error);
+        }
+    }
+    if(!user){
+        return <div>Please login to access the dashboard.</div>
+    }
+    else
     return (
         <div className="flex h-screen bg-gray-100 text-gray-900">
             {/* Sidebar */}
@@ -133,8 +146,8 @@ export default function Dashboard() {
 
                     {/* Emergency Button */}
                     <section className="col-span-12 flex justify-center">
-                        <button className="px-8 py-4 bg-red-600 rounded-full text-lg font-bold hover:bg-red-700 text-white">
-                            🚨 Emergency
+                        <button onClick={handleLogout} className="px-8 py-4 bg-red-600 rounded-full text-lg font-bold hover:bg-red-700 text-white cursor-pointer">
+                            LogOut
                         </button>
                     </section>
                 </main>
@@ -142,3 +155,5 @@ export default function Dashboard() {
         </div>
     );
 }
+
+export default Dashboard;

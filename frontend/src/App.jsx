@@ -39,10 +39,10 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<Home user={user} setUser={setUser} />} />
       <Route path="/about" element={<About />} />
       <Route path="/login" element={<Login setUser={setUser} />} />
-      <Route path="/register" element={<Register />}/>
+      <Route path="/register" element={<Register setUser={setUser} />}/>
       <Route path="/rooms" element={<Rooms />}/>
       {/* <Route path="/:type/:id" element={<Details />} /> */}
       {/* <Route path="/search/:query" element={<Search />} /> */}

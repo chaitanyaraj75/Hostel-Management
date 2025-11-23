@@ -1,15 +1,24 @@
 import { useState, Fragment } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 
-function Register() {
-    const years = ['1st', '2nd', '3rd', '4th'];
+function Register({ setUser }) {
+    const navigate = useNavigate();
+    const years = [
+        { label: '1st', value: 1 },
+        { label: '2nd', value: 2 },
+        { label: '3rd', value: 3 },
+        { label: '4th', value: 4 },
+    ]
     const branches = ['CSE', 'ECE', 'EE', 'ME', 'CE', 'ChE', 'IT', 'IOT', 'BBA', 'BPharma'];
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         student_id: '',
         year: '',
+        mobile_no: '',
         branch: '',
         password: '',
         confirmPassword: ''
@@ -26,17 +35,38 @@ function Register() {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         if (formData.password !== formData.confirmPassword) {
             setError('Passwords do not match');
             return;
         }
-        // Handle registration logic here
-        console.log('Register:', formData);
-        window.location.href = '/';
-        console.log('Registration successful');
+        // validate mobile number: must be exactly 10 digits
+        if (!/^\d{10}$/.test(formData.mobile_no)) {
+            setError('Mobile number must be 10 digits and contain only digits');
+            return;
+        }
+
+        console.log(`Student register:`, formData);
+        try {
+            const response = await axios.post('http://localhost:5000/api/auth/register', formData);
+            console.log('Registered user:', response);
+            setUser(response.data);
+            navigate('/');
+        }
+        catch (err) {
+            setError("Email, Student_id or Mobile_no already registered");
+            if (axios.isAxiosError(err)) {
+                console.error('axios status:', err.response?.status);
+                console.error('axios response data:', err.response?.data);
+                console.error('axios response headers:', err.response?.headers);
+                console.error('axios request:', err.request);
+                console.error('axios message:', err.message);
+            }
+            else
+            console.error('Registration error:', err);
+        }
     };
 
     return (
@@ -87,6 +117,21 @@ function Register() {
                             />
                         </div>
                         <div>
+                            <label htmlFor="mobile_no" className="block text-sm font-medium text-gray-700 mb-2">
+                                Mobile No
+                            </label>
+                            <input
+                                type="tel"
+                                id="mobile_no"
+                                name="mobile_no"
+                                required
+                                value={formData.mobile_no}
+                                onChange={handleInputChange}
+                                className="block text-gray-700 w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                placeholder="Enter your mobile number"
+                            />
+                        </div>
+                        <div>
                             <label htmlFor="student_id" className="block text-sm font-medium text-gray-700 mb-2">
                                 Student Id
                             </label>
@@ -103,26 +148,27 @@ function Register() {
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">Year</label>
-                            <Listbox value={formData.year} onChange={val => setFormData(f => ({ ...f, year: val }))}>
+                            <Listbox
+                                value={formData.year}
+                                onChange={val => setFormData(f => ({ ...f, year: val }))}>
                                 <div className="relative">
                                     <Listbox.Button className="block text-gray-700 w-full px-3 py-3 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-left">
-                                        {formData.year || 'Select year'}
+                                        {formData.year ? years.find(y => y.value === formData.year)?.label : 'Select year'}
                                     </Listbox.Button>
                                     <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
                                         <Listbox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-xl py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none">
                                             {years.map((year) => (
                                                 <Listbox.Option
-                                                    key={year}
-                                                    value={year}
+                                                    key={year.label}
+                                                    value={year.value}
                                                     className={({ active }) =>
-                                                        `cursor-pointer select-none relative py-2 pl-10 pr-4 ${
-                                                            active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'
+                                                        `cursor-pointer select-none relative py-2 pl-10 pr-4 ${active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'
                                                         }`
                                                     }
                                                 >
                                                     {({ selected }) => (
                                                         <>
-                                                            <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>{year}</span>
+                                                            <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>{year.label}</span>
                                                             {selected ? (
                                                                 <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-blue-600">
                                                                     ✓
@@ -151,8 +197,7 @@ function Register() {
                                                     key={branch}
                                                     value={branch}
                                                     className={({ active }) =>
-                                                        `cursor-pointer select-none relative py-2 pl-10 pr-4 ${
-                                                            active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'
+                                                        `cursor-pointer select-none relative py-2 pl-10 pr-4 ${active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'
                                                         }`
                                                     }
                                                 >
@@ -256,7 +301,7 @@ function Register() {
                 </div>
                 {/* Footer */}
                 <div className="text-center text-sm text-gray-500">
-                    <p>© 2024 Hostel Management System. All rights reserved.</p>
+                    <p>© {new Date().getFullYear()} Hostel Management System. All rights reserved.</p>
                 </div>
             </div>
         </div>
