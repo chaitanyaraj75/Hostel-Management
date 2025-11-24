@@ -14,7 +14,7 @@ const cookieOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'Strict',
-    maxAge: 24 * 60 * 60 * 1000 // 1 days
+    maxAge: 24 * 60 * 60 * 1000 // 1 daysm 
 };
 
 const generateToken = (id) => {
@@ -36,7 +36,7 @@ router.post('/register', async (req, res) => {
 
     try {
         const userExists = await pool.query(
-            'SELECT * FROM users WHERE email = $1 OR mobile_no=$2 OR student_id=$3',
+            'SELECT student_id FROM users WHERE email = $1 OR mobile_no=$2 OR student_id=$3',
             [email,mobile_no,student_id]
         );
         if (userExists.rows.length > 0) {
@@ -44,7 +44,7 @@ router.post('/register', async (req, res) => {
         }
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser=await pool.query(
-            'INSERT INTO users(name,student_id,email,mobile_no,password,branch,year)VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING *',
+            'INSERT INTO users(name,student_id,email,mobile_no,password,branch,year)VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING * EXCEPT(password)',
             [name,student_id,email,mobile_no,hashedPassword,branch,year]
         )
         const token=generateToken(newUser.rows[0].id);
@@ -60,7 +60,7 @@ router.post('/register', async (req, res) => {
 //Login
 router.post('/login',async (req,res)=>{
     console.log(req.body);
-    const {student_id,password}=req.body;
+    const {student_id,password,user_type}=req.body;
     if(!student_id||!password){
         return res.status(400).json({message:"Please provide all details"});
     }
@@ -73,6 +73,10 @@ router.post('/login',async (req,res)=>{
             return res.status(400).json({message:"Student_id not available"})
         }
         const userData=user.rows[0];
+        console.log("User Data:",userData);
+        if(userData.user_type!==user_type){
+            return res.status(400).json({message:"Invalid user type"});
+        }
         const ismatch= await bcrypt.compare(password,userData.password);
         if(!ismatch){
             return res.status(400).json({message:"Incorrect password"});

@@ -3,10 +3,11 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function Login({setUser}) {
-    const [loginType, setLoginType] = useState('student');
+    const [user_type, setLoginType] = useState('student');
     const [formData, setFormData] = useState({
         student_id: '',
-        password: ''
+        password: '',
+        user_type: user_type
     });
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
@@ -19,12 +20,19 @@ function Login({setUser}) {
             [name]: value
         }));
     };
+    const handleuser_type = (type) => {
+        setLoginType(type);
+        setFormData(prev => ({
+            ...prev,
+            user_type:type
+        }));
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         // Handle login logic here based on loginType
         // alert(`Logging in as ${loginType}`);
-        console.log(`${loginType} login:`, formData);
+        console.log(`${user_type} login:`, formData);
         try{
             const response=await axios.post('http://localhost:5000/api/auth/login',formData);
             console.log('Fetched user:',response);
@@ -32,7 +40,14 @@ function Login({setUser}) {
             navigate('/');
         }
         catch(err){
-            setError("Invalid Credentials");
+            console.error('Error during login:',err);
+            // console.log(err.response.data.message)
+            try{
+                setError(err.response.data.message);
+            }
+            catch{
+                setError("Login failed. Please try again.");
+            }
         }
     };
 
@@ -54,8 +69,8 @@ function Login({setUser}) {
                 <div className="bg-white rounded-lg p-1 shadow-lg ">
                     <div className="flex">
                         <button
-                            onClick={() => setLoginType('student')}
-                            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${loginType === 'student'
+                            onClick={() => handleuser_type('student')}
+                            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${user_type === 'student'
                                 ? 'bg-blue-500 text-white shadow-md'
                                 : 'text-gray-600 hover:text-gray-500 hover:bg-gray-50'
                                 }`}
@@ -66,8 +81,8 @@ function Login({setUser}) {
                             Student
                         </button>
                         <button
-                            onClick={() => setLoginType('admin')}
-                            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${loginType === 'admin'
+                            onClick={() => handleuser_type('admin')}
+                            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${user_type === 'admin'
                                 ? 'bg-purple-500 text-white shadow-md'
                                 : 'text-gray-600 hover:text-gray-500 hover:bg-gray-50'
                                 }`}
@@ -85,7 +100,7 @@ function Login({setUser}) {
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div>
                             <label htmlFor="student_id" className="block text-sm font-medium text-gray-700 mb-2">
-                                {loginType === 'student' ? 'Student Id' : 'Admin Id'}
+                                {user_type === 'student' ? 'Student Id' : 'Admin Id'}
                             </label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -102,7 +117,7 @@ function Login({setUser}) {
                                     onChange={handleInputChange}
                                     className="block text-gray-700 w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                                     // placeholder={loginType === 'student' ? 'Student Id' : 'Admin Id'}
-                                    placeholder={`Enter your ${loginType === 'student' ? 'Student' : 'Admin'} Id`}
+                                    placeholder={`Enter your ${user_type === 'student' ? 'Student' : 'Admin'} Id`}
                                 />
                             </div>
                         </div>
@@ -167,13 +182,13 @@ function Login({setUser}) {
                             type="submit"
                             className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 transform hover:scale-[1.02]"
                         >
-                            {loginType === 'student' ? 'Sign in as Student' : 'Sign in as Admin'}
+                            {user_type === 'student' ? 'Sign in as Student' : 'Sign in as Admin'}
                         </button>
                         {error && <p className="text-red-500 text-sm mt-4 text-center">{error}</p>}
                     </form>
 
                     {/* Divider */}
-                    {loginType === 'student' && (
+                    {user_type === 'student' && (
                         <>
                             <div className="mt-6">
                                 <div className="relative">
