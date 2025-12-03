@@ -1,4 +1,4 @@
-import Sidebar from "./componenets/Sidebar";
+import Sidebar from "./componenets/Navbar";
 
 function Rooms() {
     return <div>

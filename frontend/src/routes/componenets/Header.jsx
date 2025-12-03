@@ -1,14 +1,8 @@
 function Header() {
     return (
-        <header className="flex justify-end px-6 py-3 bg-white border-b shadow-sm">
-            {/* <nav className="flex space-x-6">
-                        {menu.map((tab) => (
-                            <a key={tab} href="#" className="hover:text-blue-600 font-medium">
-                            {tab}
-                            </a>
-                            ))}
-                            </nav> */}
-            <div className="flex  items-center space-x-4">
+        <header className="flex justify-between w-screen px-6 py-3 bg-white border-b shadow-sm">
+            <h1 className="text-2xl font-bold text-blue-600 ">HMS</h1>
+            <div className="flex items-center space-x-4">
                 <span className="cursor-pointer">📅</span>
                 <span className="cursor-pointer">🔔</span>
                 <span className="cursor-pointer">👤</span>

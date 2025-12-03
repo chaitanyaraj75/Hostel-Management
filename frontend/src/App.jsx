@@ -9,44 +9,50 @@ import Login from './routes/Login';
 import Register from './routes/Register';
 import Rooms from './routes/Rooms';
 import axios from 'axios';
+import Header from './routes/componenets/Header';
+import Navbar from './routes/componenets/Navbar';
 
-axios.defaults.withCredentials=true;
+axios.defaults.withCredentials = true;
 
 function App() {
   const [count, setCount] = useState(0)
-  const [user,setUser]=useState(null);
-  const [loading,setLoading]=useState(true);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(()=>{
-    const fetchUser=async()=>{
-      try{
-        const response=await axios.get('http://localhost:5000/api/auth/me')
-        console.log('Fetched user2:',response);
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/auth/me')
+        console.log('Fetched user2:', response);
         setUser(response.data);
-      }catch(error){
-        console.error('Error fetching user:',error);
+      } catch (error) {
+        console.error('Error fetching user:', error);
         setUser(null);
-      }finally{
+      } finally {
         setLoading(false);
       }
     }
     fetchUser();
-  },[])
+  }, [])
 
-  if(loading){
+  if (loading) {
     return <div>Loading...</div>
   }
 
   return (
-    <Routes>
-      <Route path="/" element={<Home user={user} setUser={setUser} />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/login" element={<Login setUser={setUser} />} />
-      <Route path="/register" element={<Register setUser={setUser} />}/>
-      <Route path="/rooms" element={<Rooms />}/>
-      {/* <Route path="/:type/:id" element={<Details />} /> */}
-      {/* <Route path="/search/:query" element={<Search />} /> */}
-    </Routes>
+    <>
+      {/* <Header /> */}
+      {/* <Navbar user={user} setUser={setUser}/> */}
+      <Routes>
+        <Route path="/" element={<Home user={user} setUser={setUser} />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/login" element={<Login setUser={setUser} />} />
+        <Route path="/register" element={<Register setUser={setUser} />} />
+        <Route path="/rooms" element={<Rooms />} />
+        {/* <Route path="/:type/:id" element={<Details />} /> */}
+        {/* <Route path="/search/:query" element={<Search />} /> */}
+      </Routes>
+    </>
   )
 }
 

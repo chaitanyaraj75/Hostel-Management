@@ -1,6 +1,6 @@
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import Header from "./componenets/Header";
-import Sidebar from "./componenets/Sidebar";
+import Navbar from "./componenets/Navbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -37,13 +37,14 @@ function Dashboard({user,setUser}) {
     else
     return (
         <div className="flex h-screen bg-gray-100 text-gray-900">
-            {/* Sidebar */}
-            <Sidebar />
+            
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col">
+                <Navbar user={user} setUser={setUser} />
                 {/* Top Navbar */}
-                <Header />
+                {/* <Header />
+                <Navbar /> */}
                 {/* Dashboard Widgets */}
                 <main className="p-6 grid grid-cols-12 gap-6 flex-1 overflow-y-auto">
                     {/* Occupancy (All Hostels in one field) */}
