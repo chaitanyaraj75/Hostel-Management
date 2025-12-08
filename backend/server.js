@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth.js';
 import cors from 'cors';
+import hostelRoomRoutes from './routes/hostel_rooms.js';
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use(cors({
 // app.get('/',(req,res)=>{
 //     res.send("Hello World");
 // })
+app.use("/api/hostel_rooms",hostelRoomRoutes);
 app.use("/api/auth",authRoutes);
 
 app.listen(PORT,()=>{

@@ -11,18 +11,18 @@ import Rooms from './routes/Rooms';
 import axios from 'axios';
 import Header from './routes/componenets/Header';
 import Navbar from './routes/componenets/Navbar';
+import server_url from './routes/componenets/server_url.js';
 
 axios.defaults.withCredentials = true;
 
 function App() {
-  const [count, setCount] = useState(0)
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/auth/me')
+        const response = await axios.get(`${server_url}/api/auth/me`)
         console.log('Fetched user2:', response);
         setUser(response.data);
       } catch (error) {

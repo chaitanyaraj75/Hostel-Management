@@ -28,9 +28,9 @@ const generateToken = (id) => {
 
 // Register Route
 router.post('/register', async (req, res) => {
-    const { name,email, student_id,year, mobile_no, branch,password } = req.body;
+    const { name,email,gender, student_id,year, mobile_no, branch,password } = req.body;
     console.log(req.body);
-    if(!name || !student_id || !email || !mobile_no || !password || !branch || !year) {
+    if(!name || !student_id || !email || !mobile_no || !password || !branch || !year||!gender) {
         return res.status(400).json({ message: "Please fill all the fields" });
     }
 
@@ -44,8 +44,8 @@ router.post('/register', async (req, res) => {
         }
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser=await pool.query(
-            'INSERT INTO users(name,student_id,email,mobile_no,password,branch,year)VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING * EXCEPT(password)',
-            [name,student_id,email,mobile_no,hashedPassword,branch,year]
+            'INSERT INTO users(name,student_id,email,mobile_no,password,branch,year,gender)VALUES($1,$2,$3,$4,$5,$6,$7,$8) RETURNING * EXCEPT(password)',
+            [name,student_id,email,mobile_no,hashedPassword,branch,year,gender]
         )
         const token=generateToken(newUser.rows[0].id);
         res.cookie('token',token,cookieOptions)
