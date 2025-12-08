@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Navbar from "./componenets/Navbar";
+import server_url from './componenets/server_url.js';
 
 function Login({ setUser }) {
     const [user_type, setLoginType] = useState('student');
@@ -35,7 +36,7 @@ function Login({ setUser }) {
         // alert(`Logging in as ${loginType}`);
         console.log(`${user_type} login:`, formData);
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/login', formData);
+            const response = await axios.post(`${server_url}/api/auth/login`, formData);
             console.log('Fetched user:', response);
             setUser(response.data);
             navigate('/');

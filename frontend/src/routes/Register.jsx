@@ -2,6 +2,7 @@ import { useState, Fragment } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import server_url from './componenets/server_url.js';
 
 
 function Register({ setUser }) {
@@ -12,11 +13,13 @@ function Register({ setUser }) {
         { label: '3rd', value: 3 },
         { label: '4th', value: 4 },
     ]
+    const genders = ['Male', 'Female'];
     const branches = ['CSE', 'ECE', 'EE', 'ME', 'CE', 'ChE', 'IT', 'IOT', 'BBA', 'BPharma'];
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         student_id: '',
+        gender: '',
         year: '',
         mobile_no: '',
         branch: '',
@@ -50,7 +53,7 @@ function Register({ setUser }) {
 
         console.log(`Student register:`, formData);
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/register', formData);
+            const response = await axios.post(`${server_url}/api/auth/register`, formData);
             console.log('Registered user:', response);
             setUser(response.data);
             navigate('/');
@@ -65,7 +68,7 @@ function Register({ setUser }) {
                 console.error('axios message:', err.message);
             }
             else
-            console.error('Registration error:', err);
+                console.error('Registration error:', err);
         }
     };
 
@@ -130,6 +133,45 @@ function Register({ setUser }) {
                                 className="block text-gray-700 w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                                 placeholder="Enter your mobile number"
                             />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Gender
+                            </label>
+                            <Listbox
+                                value={formData.gender}
+                                onChange={val => setFormData(f => ({ ...f, gender: val }))}>
+                                <div className="relative">
+                                    <Listbox.Button className="block text-gray-700 w-full px-3 py-3 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-left">
+                                        {formData.gender || 'Select gender'}
+                                    </Listbox.Button>
+                                    <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
+                                        <Listbox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-xl py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none">
+                                            {genders.map((gender) => (
+                                                <Listbox.Option
+                                                    key={gender}
+                                                    value={gender}
+                                                    className={({ active }) =>
+                                                        `cursor-pointer select-none relative py-2 pl-10 pr-4 ${active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'
+                                                        }`
+                                                    }
+                                                >
+                                                    {({ selected }) => (
+                                                        <>
+                                                            <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>{gender}</span>
+                                                            {selected ? (
+                                                                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-blue-600">
+                                                                    ✓
+                                                                </span>
+                                                            ) : null}
+                                                        </>
+                                                    )}
+                                                </Listbox.Option>
+                                            ))}
+                                        </Listbox.Options>
+                                    </Transition>
+                                </div>
+                            </Listbox>
                         </div>
                         <div>
                             <label htmlFor="student_id" className="block text-sm font-medium text-gray-700 mb-2">
@@ -289,7 +331,33 @@ function Register({ setUser }) {
                         {error && <div className="text-red-500 text-sm">{error}</div>}
                         <button
                             type="submit"
-                            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 transform hover:scale-[1.02]"
+                            disabled={
+                                !formData.name ||
+                                !formData.email ||
+                                !formData.student_id ||
+                                !formData.gender ||
+                                !formData.year ||
+                                !formData.mobile_no ||
+                                !formData.branch ||
+                                !formData.password ||
+                                !formData.confirmPassword
+                            }
+                            className={`w-full flex justify-center py-3 px-4 rounded-lg shadow-sm text-sm font-medium text-white 
+                                transition-all duration-200 transform focus:outline-none focus:ring-2 focus:ring-offset-2 
+                                ${(
+                                    !formData.name ||
+                                    !formData.email ||
+                                    !formData.student_id ||
+                                    !formData.gender ||
+                                    !formData.year ||
+                                    !formData.mobile_no ||
+                                    !formData.branch ||
+                                    !formData.password ||
+                                    !formData.confirmPassword
+                                )
+                                    ? 'bg-gray-300 cursor-not-allowed opacity-70 scale-[1] border border-gray-300'
+                                    : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 focus:ring-blue-500 hover:scale-[1.02] border border-transparent'
+                                }`}
                         >
                             Register
                         </button>
