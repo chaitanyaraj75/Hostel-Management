@@ -68,6 +68,7 @@ router.get('/rem_rooms', async (req, res) => {
     }
 });
 
+//Request a room
 router.post('/request_room', async (req, res) => {
     const { student_id, hostel_id } = req.body;
     if (!student_id || !hostel_id) {
