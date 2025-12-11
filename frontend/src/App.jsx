@@ -1,6 +1,4 @@
 import { useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import { Routes, Route } from "react-router-dom";
 import Home from './routes/Home';
@@ -13,6 +11,7 @@ import Header from './routes/componenets/Header';
 import Navbar from './routes/componenets/Navbar';
 import server_url from './routes/componenets/server_url.js';
 import ErrorBoundary from './routes/componenets/ErrorBoundary.jsx';
+import Complaints from './routes/Complaints.jsx';
 
 axios.defaults.withCredentials = true;
 
@@ -50,6 +49,7 @@ function App() {
         <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/register" element={<Register setUser={setUser} />} />
         <Route path="/rooms" element={<Rooms user={user} setUser={setUser} />} />
+        <Route path='/complaints' element={<Complaints user={user} />} />
         {/* <Route path="/:type/:id" element={<Details />} /> */}
         {/* <Route path="/search/:query" element={<Search />} /> */}
       </Routes>
