@@ -12,6 +12,7 @@ import axios from 'axios';
 import Header from './routes/componenets/Header';
 import Navbar from './routes/componenets/Navbar';
 import server_url from './routes/componenets/server_url.js';
+import ErrorBoundary from './routes/componenets/ErrorBoundary.jsx';
 
 axios.defaults.withCredentials = true;
 
@@ -24,7 +25,7 @@ function App() {
       try {
         const response = await axios.get(`${server_url}/api/auth/me`)
         console.log('Fetched user2:', response);
-        setUser(response.data);
+        setUser(response.data.user);
       } catch (error) {
         console.error('Error fetching user:', error);
         setUser(null);
@@ -40,19 +41,19 @@ function App() {
   }
 
   return (
-    <>
+    <ErrorBoundary>
       {/* <Header /> */}
-      {/* <Navbar user={user} setUser={setUser}/> */}
+      <Navbar user={user} setUser={setUser}/>
       <Routes>
         <Route path="/" element={<Home user={user} setUser={setUser} />} />
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/register" element={<Register setUser={setUser} />} />
-        <Route path="/rooms" element={<Rooms />} />
+        <Route path="/rooms" element={<Rooms user={user} setUser={setUser} />} />
         {/* <Route path="/:type/:id" element={<Details />} /> */}
         {/* <Route path="/search/:query" element={<Search />} /> */}
       </Routes>
-    </>
+    </ErrorBoundary>
   )
 }
 

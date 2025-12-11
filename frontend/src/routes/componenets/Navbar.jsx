@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import server_url from "./server_url";
 
 function Navbar({ user, setUser }) {
     const sidebarItems = ["Dashboard", "Rooms", "Allotment", "Students", "Complaints", "Meals"];
     const handleLogout = async () => {
         try {
-            await axios.post('http://localhost:5000/api/auth/logout');
+            await axios.post(`${server_url}/api/auth/logout`);
             setUser(null);
         } catch (error) {
             console.error('Error during logout:', error);

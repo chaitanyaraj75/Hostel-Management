@@ -55,7 +55,7 @@ function Register({ setUser }) {
         try {
             const response = await axios.post(`${server_url}/api/auth/register`, formData);
             console.log('Registered user:', response);
-            setUser(response.data);
+            setUser(response.data.user);
             navigate('/');
         }
         catch (err) {

@@ -38,7 +38,7 @@ function Login({ setUser }) {
         try {
             const response = await axios.post(`${server_url}/api/auth/login`, formData);
             console.log('Fetched user:', response);
-            setUser(response.data);
+            setUser(response.data.user);
             navigate('/');
         }
         catch (err) {
@@ -55,7 +55,6 @@ function Login({ setUser }) {
 
     return (
         <>
-            <Navbar />
             <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
                 <div className="max-w-md w-full space-y-8">
                     {/* Header */}

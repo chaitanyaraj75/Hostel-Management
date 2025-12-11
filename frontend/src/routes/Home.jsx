@@ -41,7 +41,7 @@ function Dashboard({user,setUser}) {
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col">
-                <Navbar user={user} setUser={setUser} />
+                {/* <Navbar user={user} setUser={setUser} /> */}
                 {/* Top Navbar */}
                 {/* <Header />
                 <Navbar /> */}
