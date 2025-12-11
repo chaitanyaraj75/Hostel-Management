@@ -1,9 +1,8 @@
 import Navbar from "./componenets/Navbar";
 import { useState, useEffect } from 'react';
-import server_url from "./componenets/server_url";
-import axios from "axios";
 import StudentRooms from "./componenets/StudentRoomPage";
 import AdminRoomPage from "./componenets/AdminRoomPage";
+import Redirect from "./componenets/Redirect";
 
 function Rooms({ user, setUser }) {
     console.log("Rooms Page User:", user);
@@ -13,8 +12,7 @@ function Rooms({ user, setUser }) {
     const girls_hostel = ['Saraswati', 'Kalpana'];
     const room_types = ['Single', 'Double', 'Triple'];
     if (!user) {
-        // return <div>Loading...</div>
-        window.location.href = "/login";
+        return <Redirect />;
     }
     else if (curr_user == "admin") {
         return <>

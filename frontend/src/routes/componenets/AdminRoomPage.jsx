@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import server_url from "./server_url.js";
 import axios from "axios";
-
+//Error handling and loading states to be added
 function AdminRoomPage({ user }) {
     const [pendingRoomRequests, setPendingRoomRequests] = useState([]);
     const [otherRoomRequests, setOtherRoomRequests] = useState([]);

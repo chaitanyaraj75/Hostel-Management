@@ -3,6 +3,8 @@ import Header from "./componenets/Header";
 import Navbar from "./componenets/Navbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import server_url from "./componenets/server_url";
+import Redirect from "./componenets/Redirect";
 
 const occupancyData = [
     { name: "Hostel 1", value: 50, color: "#2563EB" }, // Blue
@@ -25,14 +27,14 @@ const menu = ["Dashboard", "Rooms", "Attendance", "Accounts", "Maintenance"];
 function Dashboard({user,setUser}) {
     const handleLogout=async()=>{
         try{
-            await axios.post('http://localhost:5000/api/auth/logout');
+            await axios.post(`${server_url}/api/auth/logout`);
             setUser(null);
         }catch(error){
             console.error('Error during logout:',error);
         }
     }
     if(!user){
-        return <div>Please login to access the dashboard.</div>
+        return <Redirect />;
     }
     else
     return (
