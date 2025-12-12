@@ -13,47 +13,49 @@ function AdminRoomPage({ user }) {
         'declined': 'Declined'
     }
 
-    const handleApprove= async (requestId,student_id,hostel_id) => {
+    const handleApprove = async (requestId, student_id, hostel_id) => {
         try {
             console.log("Approving request:", requestId, student_id, hostel_id);
-            await axios.post(`${server_url}/api/hostel_rooms/approve_request`, {request_id: requestId, student_id: student_id, hostel_id: hostel_id});
-            window.location.reload();
+            await axios.post(`${server_url}/api/hostel_rooms/approve_request`, { request_id: requestId, student_id: student_id, hostel_id: hostel_id });
+            // window.location.reload();
+            fetchRoomRequests();
         } catch (err) {
             console.error("Approve failed:", err);
             alert("Approve failed: " + (err?.response?.data || err.message));
         }
     };
 
-    const handleDecline= async (requestId,student_id,hostel_id) => {
+    const handleDecline = async (requestId, student_id, hostel_id) => {
         try {
-            await axios.post(`${server_url}/api/hostel_rooms/decline_request`, {request_id: requestId, student_id: student_id, hostel_id: hostel_id});
-            window.location.reload();
+            await axios.post(`${server_url}/api/hostel_rooms/decline_request`, { request_id: requestId, student_id: student_id, hostel_id: hostel_id });
+            // window.location.reload();
+            fetchRoomRequests();
         } catch (err) {
             console.error("Decline failed:", err);
             alert("Decline failed: " + (err?.response?.data || err.message));
         }
     };
 
-    useEffect(() => {
-        const fetchRoomRequests = async () => {
-            setLoading(true);
-            setError(null);
-            try {
-                const url = `${server_url}/api/hostel_rooms/room_requests`;
-                console.log("Requesting:", url);
-                const response = await axios.get(url);
-                // Expecting { pending_requests: [...], other_requests: [...] }
-                setPendingRoomRequests(response.data.pending_requests || []);
-                setOtherRoomRequests(response.data.other_requests || []);
-                console.log("Fetched Room Requests:", response.data);
-            } catch (err) {
-                console.error("Error fetching room requests:", err);
-                setError(err?.response?.data || err.message || "Unknown error");
-            } finally {
-                setLoading(false);
-            }
-        };
+    const fetchRoomRequests = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const url = `${server_url}/api/hostel_rooms/room_requests`;
+            console.log("Requesting:", url);
+            const response = await axios.get(url);
+            // Expecting { pending_requests: [...], other_requests: [...] }
+            setPendingRoomRequests(response.data.pending_requests || []);
+            setOtherRoomRequests(response.data.other_requests || []);
+            console.log("Fetched Room Requests:", response.data);
+        } catch (err) {
+            console.error("Error fetching room requests:", err);
+            setError(err?.response?.data || err.message || "Unknown error");
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
         fetchRoomRequests();
     }, []);
 
@@ -70,8 +72,8 @@ function AdminRoomPage({ user }) {
 
                 <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
                     <div className="mb-6">
-                        <h2 className="text-2xl font-semibold">Hello {user?.name || 'Admin'}!</h2>
-
+                        {/* <h2 className="text-2xl font-semibold">Hello {user?.name || 'Admin'}!</h2> */}
+                        <h3 className="text-lg font-medium mb-2">Pending requests</h3>
                         {pendingRoomRequests.length > 0 ? (
                             <div className="mt-4 space-y-4">
                                 {pendingRoomRequests.map((req) => (
@@ -111,13 +113,13 @@ function AdminRoomPage({ user }) {
                                                 </p>
                                                 <div className="flex gap-2">
                                                     <button
-                                                        onClick={() => handleApprove(req.request_id,req.student_id,req.id)}
+                                                        onClick={() => handleApprove(req.request_id, req.student_id, req.id)}
                                                         className="px-3 py-1 rounded bg-green-600 text-white cursor-pointer hover:shadow-lg transition"
                                                     >
                                                         Approve
                                                     </button>
                                                     <button
-                                                        onClick={() => handleDecline(req.request_id,req.student_id,req.id)}
+                                                        onClick={() => handleDecline(req.request_id, req.student_id, req.id)}
                                                         className="px-3 py-1 rounded bg-red-600 text-white cursor-pointer hover:shadow-lg transition"
                                                     >
                                                         Decline
@@ -177,7 +179,7 @@ function AdminRoomPage({ user }) {
                                                 <p className="text-sm text-gray-600 mt-2">
                                                     Request Status
                                                 </p>
-                                                <p className={`px-3 py-1 rounded ${req.status=='approved'? 'bg-[#5eb67db6]': 'bg-[#d5ae20e3]'} text-gray-600 font-medium`}>
+                                                <p className={`px-3 py-1 rounded ${req.status == 'approved' ? 'bg-[#5eb67db6]' : 'bg-[#d5ae20e3]'} text-gray-600 font-medium`}>
                                                     {reqmap[req.status]}
                                                 </p>
                                             </div>
