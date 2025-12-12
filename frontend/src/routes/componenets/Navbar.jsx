@@ -3,7 +3,7 @@ import axios from "axios";
 import server_url from "./server_url";
 
 function Navbar({ user, setUser }) {
-    const sidebarItems = ["Dashboard", "Rooms", "Allotment", "Students", "Complaints", "Meals"];
+    const sidebarItems = ["Dashboard", "Rooms", "Accounts", "Complaints", "Staffs"];
     const handleLogout = async () => {
         try {
             await axios.post(`${server_url}/api/auth/logout`);

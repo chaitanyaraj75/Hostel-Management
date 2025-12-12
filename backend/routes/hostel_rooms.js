@@ -34,6 +34,19 @@ router.get('/roomates', async (req, res) => {
     }
 });
 
+//Get all hostel rooms everything
+router.get('/all_rooms', async (req, res) => {
+    try {
+        const rooms = await pool.query('SELECT * FROM hostel_rooms');
+        res.status(200).json(rooms.rows)
+        console.log("All Rooms:", rooms.rows);
+    }
+    catch (err) {
+        console.error("Error fetching all rooms:", err);
+        res.status(500).json({ message: "All Rooms fetching error" });
+    }
+})
+
 // Get all hostel rooms
 router.get('/rem_rooms', async (req, res) => {
     const { hostel_name, room_type, gender } = req.query;
@@ -47,17 +60,17 @@ router.get('/rem_rooms', async (req, res) => {
         }
         else if (hostel_name && !room_type) {
             rooms = await pool.query('SELECT * FROM hostel_rooms WHERE hostel_name=$1 and seats_rem>0 AND members=$2 ORDER BY id ASC',
-                [hostel_name,gender]
+                [hostel_name, gender]
             );
         }
         else if (!hostel_name && room_type) {
             rooms = await pool.query('SELECT * FROM hostel_rooms WHERE room_type=$1 and seats_rem>0 AND members=$2 ORDER BY id ASC',
-                [room_type,gender]
+                [room_type, gender]
             );
         }
         else {
             rooms = await pool.query('SELECT * FROM hostel_rooms WHERE hostel_name=$1 AND room_type=$2 and seats_rem>0 AND members=$3 ORDER BY id ASC',
-                [hostel_name, room_type,gender]
+                [hostel_name, room_type, gender]
             );
         }
         // console.log(rooms.rows);
@@ -167,19 +180,29 @@ router.get('/room_requests', async (req, res) => {
             other_requests: other_requests.rows
         });
     }
-    catch(err){
+    catch (err) {
         console.error("Error fetching room requests:", err);
         res.status(500).json({ message: "Room requests loading failed" });
     }
 });
 
 router.post('/approve_request', async (req, res) => {
-    const { request_id,student_id,hostel_id } = req.body;
+    const { request_id, student_id, hostel_id } = req.body;
     console.log("Approve Request Data:", req.body);
     if (!request_id || !student_id || !hostel_id) {
         return res.status(400).json({ message: "Please provide all details" });
     }
     try {
+        const user = await pool.query(
+            'SELECT hostel_id FROM users WHERE student_id=$1',
+            [student_id]
+        );
+        if (user?.rows[0]?.hostel_id) {
+            await pool.query(
+                'UPDATE hostel_rooms SET seats_rem=seats_rem+1 WHERE id=$1 RETURNING *',
+                [user.rows[0].hostel_id]
+            )
+        }
         const approveRequest = await pool.query(
             'UPDATE room_requests SET status=$1 WHERE id=$2 RETURNING *',
             ['approved', request_id]
@@ -198,7 +221,7 @@ router.post('/approve_request', async (req, res) => {
 });
 
 router.post('/decline_request', async (req, res) => {
-    const { request_id,student_id,hostel_id } = req.body;
+    const { request_id, student_id, hostel_id } = req.body;
     if (!request_id || !student_id || !hostel_id) {
         return res.status(400).json({ message: "Please provide all details" });
     }
