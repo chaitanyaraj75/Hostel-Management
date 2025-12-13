@@ -15,30 +15,34 @@ function AdminRoomPage({ user }) {
 
     const handleApprove = async (requestId, student_id, hostel_id) => {
         try {
+            setLoading(true);
             console.log("Approving request:", requestId, student_id, hostel_id);
             await axios.post(`${server_url}/api/hostel_rooms/approve_request`, { request_id: requestId, student_id: student_id, hostel_id: hostel_id });
-            // window.location.reload();
             fetchRoomRequests();
         } catch (err) {
             console.error("Approve failed:", err);
             alert("Approve failed: " + (err?.response?.data || err.message));
         }
+        finally{
+            setLoading(false);
+        }
     };
 
     const handleDecline = async (requestId, student_id, hostel_id) => {
         try {
+            setLoading(true);
             await axios.post(`${server_url}/api/hostel_rooms/decline_request`, { request_id: requestId, student_id: student_id, hostel_id: hostel_id });
-            // window.location.reload();
             fetchRoomRequests();
         } catch (err) {
             console.error("Decline failed:", err);
             alert("Decline failed: " + (err?.response?.data || err.message));
         }
+        finally{
+            setLoading(false);
+        }
     };
 
     const fetchRoomRequests = async () => {
-        setLoading(true);
-        setError(null);
         try {
             const url = `${server_url}/api/hostel_rooms/room_requests`;
             console.log("Requesting:", url);
@@ -49,14 +53,28 @@ function AdminRoomPage({ user }) {
             console.log("Fetched Room Requests:", response.data);
         } catch (err) {
             console.error("Error fetching room requests:", err);
-            setError(err?.response?.data || err.message || "Unknown error");
-        } finally {
-            setLoading(false);
         }
     };
 
+    const LoadAll=async()=>{
+        setLoading(true);
+        setError(null);
+        try{
+            await Promise.all([
+                fetchRoomRequests()
+            ])
+        }
+        catch(err){
+            console.error("Error loading data:", err);
+            setError(err?.response?.data || err.message || "Unknown error");
+        }
+        finally{
+            setLoading(false);
+        }
+    }
+
     useEffect(() => {
-        fetchRoomRequests();
+        LoadAll();
     }, []);
 
     if (loading) return <p className="p-6">Loading room requests...</p>;

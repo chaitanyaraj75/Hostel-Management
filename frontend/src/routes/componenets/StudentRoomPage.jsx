@@ -17,41 +17,56 @@ function StudentRooms({ user }) {
     const [availableRooms, setAvailableRooms] = useState([]);
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [buttonloading, setButtonLoading] = useState(false);
 
+    const fetchRoomDetails = async () => {
+        try {
+            const res = await axios.get(`${server_url}/api/hostel_rooms/hostel_room/${user.hostel_id}`);
+            setRoomDetail(res.data);
+        } catch (err) {
+            console.error('Error fetching room details', err);
+        }
+    };
 
+    const fetchRoommates = async () => {
+        try {
+            const res = await axios.get(`${server_url}/api/hostel_rooms/roomates`, {
+                params: { hostel_id: user.hostel_id }
+            });
+            setRoommates(res.data);
+            console.log("Fetched Roommates:", res.data);
+        } catch (err) {
+            console.error('Error fetching roommates', err);
+        }
+    };
+
+    const LoadAll=async()=>{
+        setLoading(true);
+        setError(null);
+        try{
+            if(!user) return;
+            await Promise.all([
+                fetchRoomDetails()
+            ])
+            if(!user.hostel_id) return;
+            await Promise.all([
+                fetchRoommates()
+            ])
+        }
+        catch(err){
+            console.error("Error loading data:", err);
+            setError(err?.response?.data || err.message || "Unknown error");
+        }
+        finally{
+            setLoading(false);
+        }
+    }
 
     useEffect(() => {
-        if (!user) return;
-
-        const fetchRoomDetails = async () => {
-            try {
-                const res = await axios.get(`${server_url}/api/hostel_rooms/hostel_room/${user.hostel_id}`);
-                setRoomDetail(res.data);
-            } catch (err) {
-                console.error('Error fetching room details', err);
-            }
-        };
-
-        fetchRoomDetails();
+        LoadAll();
     }, [user]);
-
-    useEffect(() => {
-        if (!user || !user.hostel_id) return;
-        // console.log("Fetching roommates for hostel_id:", user.hostel_id);
-
-        const fetchRoommates = async () => {
-            try {
-                const res = await axios.get(`${server_url}/api/hostel_rooms/roomates`, {
-                    params: { hostel_id: user.hostel_id }
-                });
-                setRoommates(res.data);
-                console.log("Fetched Roommates:", res.data);
-            } catch (err) {
-                console.error('Error fetching roommates', err);
-            }
-        };
-        fetchRoommates();
-    }, [user])
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -63,6 +78,7 @@ function StudentRooms({ user }) {
         // For now we just log the search criteria; can be wired to an API
         console.log('Searching rooms with', formData);
         try {
+            setButtonLoading(true);
             const res = await axios.get(`${server_url}/api/hostel_rooms/rem_rooms`, {
                 params: {
                     hostel_name: formData.hostel_name,
@@ -75,7 +91,25 @@ function StudentRooms({ user }) {
         } catch (err) {
             console.error('Error fetching available rooms', err);
         }
+        finally{
+            setButtonLoading(false);
+        }
     };
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center"> 
+                <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16"></div>
+            </div>
+        );
+    }
+
+    if(error){
+        return(
+            <div className="min-h-screen flex items-center justify-center">
+                <p className="text-red-500 text-lg">{error.toString()}</p>
+            </div>
+        )
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-start justify-center p-6">
@@ -206,10 +240,12 @@ function StudentRooms({ user }) {
                                 setShowModal={setShowModal}
                             />
                         )}
-                        {availableRooms.length > 0 && (
+                        {buttonloading ? (
+                            <div>Loading</div>
+                        ) : availableRooms.length > 0 ? (
                             <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                                 {availableRooms.map((room) => (
-                                    <div 
+                                    <div
                                         key={room.id}
                                         className="p-4 max-w-fit mb-4 border rounded-lg bg-gray-50 cursor-pointer hover:shadow-lg transition"
                                         onClick={() => {
@@ -224,6 +260,8 @@ function StudentRooms({ user }) {
                                     </div>
                                 ))}
                             </div>
+                        ) : (
+                            <p className="text-sm text-gray-600 mt-2">No available rooms found based on your criteria.</p>
                         )}
                     </div>
                 </div>

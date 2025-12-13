@@ -5,7 +5,8 @@ import axios from "axios";
 function AdminComplaintPage({ user }) {
     const [pendingComplaints, setPendingComplaints] = useState([]);
     const [resolvedComplaints, setResolvedComplaints] = useState([]);
-    const [newComplaint, setNewComplaint] = useState({ title: '', description: '' });
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     const fetchComplaints = async () => {
         try {
@@ -18,33 +19,75 @@ function AdminComplaintPage({ user }) {
         }
     };
 
+    const LoadAll=async()=>{
+        setLoading(true);
+        setError(null);
+        try{
+            await Promise.all([
+                fetchComplaints()
+            ])
+        }
+        catch(err){
+            console.error("Error loading data:", err);
+            setError(err?.response?.data || err.message || "Unknown error");
+        }
+        finally{
+            setLoading(false);
+        }
+    }
+
     useEffect(() => {
-        fetchComplaints();
+        LoadAll();
     }, []);
 
     const handleResolve = async (complaint_id) => {
         try {
+            setLoading(true);
             const response = await axios.put(`${server_url}/api/complaints/resolve_complaint`, null, {
                 params: { complaint_id }
             });
             console.log('Complaint resolved:', response.data);
-            fetchComplaints();
+            LoadAll();
         } 
         catch (error) {
             console.error('Error resolving complaint:', error);
+        }
+        finally{
+            setLoading(false);
         }
     };
 
     const handleDelete = async (complaint_id) => {
         try {
+            setLoading(true);
             const response = await axios.delete(`${server_url}/api/complaints/delete_complaint`, {params: {complaint_id}});
             console.log('Complaint deleted:', response.data);
-            fetchComplaints();
+            LoadAll();
         } 
         catch (error) {
             console.error('Error deleting complaint:', error);
         }
+        finally{
+            setLoading(false);
+        }
     };
+
+    if(loading){
+        return <div className="min-h-screen flex items-center justify-center">
+            <div className="text-center">
+                <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16 mb-4 mx-auto"></div>
+                <h2 className="text-xl font-semibold">Loading...</h2>
+            </div>
+        </div>
+    }
+
+    if(error){
+        return <div className="min-h-screen flex items-center justify-center">
+            <div className="text-center">
+                <h2 className="text-xl font-semibold text-red-600">Error: {error}</h2>
+            </div>
+        </div>
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-start justify-center p-6">

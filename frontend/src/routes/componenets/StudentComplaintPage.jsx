@@ -8,6 +8,9 @@ function StudentComplaintPage({ user }) {
         title: '',
         description: ''
     });
+    const [loading, setLoading] = useState(true);
+    const [buttonloading, setButtonLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     const fetchComplaints = async () => {
         try {
@@ -20,8 +23,26 @@ function StudentComplaintPage({ user }) {
             console.error('Error fetching complaints:', error);
         }
     }
+
+    const LoadAll=async()=>{
+        setLoading(true);
+        setError(null);
+        try{
+            await Promise.all([
+                fetchComplaints()
+            ])
+        }
+        catch(err){
+            console.error("Error loading data:", err);
+            setError(err?.response?.data || err.message || "Unknown error");
+        }
+        finally{
+            setLoading(false);
+        }
+    }
+
     useEffect(() => {
-        fetchComplaints();
+        LoadAll();
     }, [])
 
     const handleInputChange = (e) => {
@@ -58,15 +79,36 @@ function StudentComplaintPage({ user }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const response = await axios.post(`${server_url}/api/complaints/add_complaint`, {
-            student_id: user.student_id,
-            title: newComplaint.title,
-            description: newComplaint.description
-        });
-        console.log('Complaint submitted:', response.data);
-        setNewComplaint({ title: '', description: '' });
-        fetchComplaints();
+        try{
+            setButtonLoading(true);
+            const response = await axios.post(`${server_url}/api/complaints/add_complaint`, {
+                student_id: user.student_id,
+                title: newComplaint.title,
+                description: newComplaint.description
+            });
+            console.log('Complaint submitted:', response.data);
+            setNewComplaint({ title: '', description: '' });
+            fetchComplaints();
+        }
+        catch(error){
+            console.error('Error submitting complaint:', error);
+        }
+        finally{
+            setButtonLoading(false);
+        }
     };
+
+    if(loading){
+        return <div className="flex items-center justify-center min-h-screen">
+            <div className="text-gray-600 text-lg">Loading...</div>
+        </div>
+    }
+
+    if(error){
+        return <div className="flex items-center justify-center min-h-screen">
+            <div className="text-red-600 text-lg">Error: {error}</div>
+        </div>
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-start justify-center p-6">
@@ -122,9 +164,10 @@ function StudentComplaintPage({ user }) {
                             <div className="flex">
                                 <button
                                     type="submit"
+                                    disabled={buttonloading}
                                     className="w-full cursor-pointer py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-md hover:shadow-lg transition"
                                 >
-                                    Submit
+                                    {buttonloading ? 'Submitting...' : 'Submit Complaint'}
                                 </button>
                             </div>
 

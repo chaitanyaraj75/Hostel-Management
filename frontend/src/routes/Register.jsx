@@ -29,6 +29,7 @@ function Register({ setUser }) {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -53,6 +54,7 @@ function Register({ setUser }) {
 
         console.log(`Student register:`, formData);
         try {
+            setLoading(true);
             const response = await axios.post(`${server_url}/api/auth/register`, formData);
             console.log('Registered user:', response);
             setUser(response.data.user);
@@ -69,6 +71,9 @@ function Register({ setUser }) {
             }
             else
                 console.error('Registration error:', err);
+        }
+        finally{
+            setLoading(false);
         }
     };
 
@@ -353,13 +358,14 @@ function Register({ setUser }) {
                                     !formData.mobile_no ||
                                     !formData.branch ||
                                     !formData.password ||
-                                    !formData.confirmPassword
+                                    !formData.confirmPassword||
+                                    loading
                                 )
                                     ? 'bg-gray-300 cursor-not-allowed opacity-70 scale-[1] border border-gray-300'
                                     : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 focus:ring-blue-500 hover:scale-[1.02] border border-transparent'
                                 }`}
                         >
-                            Register
+                            {loading ? 'Registering...' : 'Register'}
                         </button>
                     </form>
                     <div className="mt-6 text-center">

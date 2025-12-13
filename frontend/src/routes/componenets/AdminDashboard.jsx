@@ -18,6 +18,9 @@ function AdminDashboard({ user, setUser }) {
     const [occupancyData, setOccupancyData] = useState([]);
     const [complaintsData, setComplaintsData] = useState(null);
     const [hostel_requests, sethostel_requests] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
     const navigate = useNavigate();
     const handleLogout = async () => {
         try {
@@ -32,19 +35,15 @@ function AdminDashboard({ user, setUser }) {
     const fetchOccupancyData = async () => {
         try {
             const rooms = await axios.get(`${server_url}/api/hostel_rooms/all_rooms`);
-            hostels.forEach((hostel, index) => {
+            const newData = hostels.map((hostel, index) => {
                 const totalRooms = rooms.data.filter(room => room.hostel_name === hostel);
                 const totalSeats = totalRooms.reduce((sum, room) => sum + hostel_types[room.room_type], 0);
                 const remainingSeats = totalRooms.reduce((sum, room) => sum + room.seats_rem, 0);
-                console.log('Hostel:', hostel, 'Total Seats:', totalSeats, 'Remaining Seats:', remainingSeats);
                 const occupancyRate = totalSeats === 0 ? 0 : Math.round(((totalSeats - remainingSeats) / totalSeats) * 100);
-                setOccupancyData((prevData) => {
-                    const newData = [...prevData];
-                    newData[index] = { name: hostel, value: occupancyRate, color: hostel_colors[index] };
-                    return newData;
-                });
+                console.log('Hostel:', hostel, 'Total Seats:', totalSeats, 'Remaining Seats:', remainingSeats);
+                return { name: hostel, value: occupancyRate, color: hostel_colors[index] };
             });
-            // console.log('Occupancy Data:', occupancyData);
+            setOccupancyData(newData);
         } catch (error) {
             console.error('Error fetching occupancy data:', error);
         }
@@ -88,11 +87,33 @@ function AdminDashboard({ user, setUser }) {
     }
 
     useEffect(() => {
-        fetchOccupancyData();
-        fetchcomplaintsData();
-        fetchHostelRequests();
+        setLoading(true);
+        setError(null);
+        const loadAll = async () => {
+            try {
+                await Promise.all([
+                    fetchOccupancyData(),
+                    fetchcomplaintsData(),
+                    fetchHostelRequests(),
+                ]);
+            } catch (err) {
+                console.error('Error loading admin dashboard data:', err);
+                setError('Failed to load data. Please try again later.');
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadAll();
     }, []);
 
+    if(loading){
+        return <div>Loading Admin Page...</div>;
+    }
+
+    if(error){
+        return <div>{error}</div>;
+    }
+    
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-start justify-center p-6">
             <div className="max-w-6xl w-full space-y-6">

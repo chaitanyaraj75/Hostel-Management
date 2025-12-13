@@ -4,8 +4,10 @@ import server_url from "./server_url.js";
 
 function HostelApproval({ user, hostel, setShowModal }) {
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
     const handleRoomRequest = async (student_id, hostel_id) => {
         try {
+            setLoading(true);
             const response = await axios.post(`${server_url}/api/hostel_rooms/request_room`, {
                 student_id,
                 hostel_id
@@ -19,6 +21,9 @@ function HostelApproval({ user, hostel, setShowModal }) {
             } else {
                 setError("Failed to request room. Please try again.");
             }
+        }
+        finally{
+            setLoading(false);
         }
     }
     return <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-white/10 z-50">
@@ -51,9 +56,10 @@ function HostelApproval({ user, hostel, setShowModal }) {
                         // You can call your API here
                         handleRoomRequest(user.student_id, hostel.id);
                     }}
+                    disabled={loading}
                     className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
                 >
-                    Confirm
+                    {loading ? 'Requesting...' : 'Confirm'}
                 </button>
             </div>
             {error && <p className="text-red-500 mt-3">{error}</p>}
