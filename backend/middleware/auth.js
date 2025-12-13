@@ -8,6 +8,7 @@ export const protect = async (req, res, next) => {
             return res.status(401).json({ message: "No token, authorization denied" });
         }
         const decoded=jwt.verify(token, process.env.JWT_SECRET);
+        // window.alert(decoded.id);
         const user=await pool.query('SELECT * FROM users WHERE id=$1',[decoded.id]);
         if(user.rows.length===0){
             return res.status(401).json({ message: "User not found, authorization denied" });
