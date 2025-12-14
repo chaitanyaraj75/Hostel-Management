@@ -243,5 +243,22 @@ router.post('/decline_request', async (req, res) => {
     }
 });
 
+//Get hostel room by hostel_id
+router.get('/hostel_room_by_hostel_id', async (req, res) => {
+    const { hostel_id } = req.query;
+    try{
+        const room=await pool.query('SELECT * FROM hostel_rooms WHERE id=$1', [hostel_id]);
+        if(room.rows.length===0){
+            return res.status(404).json({message:"Room not found"});
+        }
+        res.status(200).json(room.rows[0]);
+        console.log("Hostel Room by Hostel ID:", room.rows[0]);
+    }
+    catch(err){
+        console.log("Error fetching hostel room by hostel ID:", err);
+        res.status(500).json({message:"Hostel Room by Hostel ID fetching error"});
+    }
+});
+
 
 export default router;
