@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import server_url from "./server_url";
 import { useState, useEffect } from "react";
+import menu from "./menu.js"
 
-const menu = ["Dashboard", "Rooms", "Accounts","Complaints", "Staffs"];
 const hostels = ['Subhash', 'Raman', 'Tilak', 'Saraswati', 'Kalpana'];
 const hostel_colors = ['#2563EB', '#FACC15', '#EC4899', '#10B981', '#8B5CF6'];
 const hostel_types = {
