@@ -12,6 +12,7 @@ import Navbar from './routes/componenets/Navbar';
 import server_url from './routes/componenets/server_url.js';
 import ErrorBoundary from './routes/componenets/ErrorBoundary.jsx';
 import Complaints from './routes/Complaints.jsx';
+import Contacts from './routes/Contacts.jsx';
 
 axios.defaults.withCredentials = true;
 
@@ -50,6 +51,7 @@ function App() {
         <Route path="/register" element={<Register setUser={setUser} />} />
         <Route path="/rooms" element={<Rooms user={user} setUser={setUser} />} />
         <Route path='/complaints' element={<Complaints user={user} />} />
+        <Route path='/contacts' element={<Contacts user={user} />} />
         {/* <Route path="/:type/:id" element={<Details />} /> */}
         {/* <Route path="/search/:query" element={<Search />} /> */}
       </Routes>
