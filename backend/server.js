@@ -21,7 +21,7 @@ app.use(cors({
 }));
 
 app.get("/", (req, res) => {
-  res.send("Hostel Management Backend is LIVE 🚀");
+  res.status(200).send("Backend alive 🚀");
 });
 
 app.use("/api/hostel_rooms", hostelRoomRoutes);
