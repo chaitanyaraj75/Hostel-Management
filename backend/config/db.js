@@ -23,14 +23,20 @@ dotenv.config();
 
 const pool = new Pool({
   connectionString: process.env.NEON_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
-pool.connect()
-.then(()=>{
-    console.log("Connected to the database successfully");
-})
-.catch((err)=>{
-    console.error("Error connecting to the database:",err);
+// OPTIONAL: log first successful connection
+pool.query("SELECT 1")
+  .then(() => console.log("Connected to the database successfully"))
+  .catch(err => console.error("Initial DB connection error:", err.message));
+
+// 🔥 VERY IMPORTANT: prevent app crash
+pool.on("error", (err) => {
+  console.error("Unexpected PostgreSQL error:", err.message);
+  // DO NOT throw
 });
 
 export default pool;
