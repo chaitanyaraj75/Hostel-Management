@@ -34,6 +34,9 @@ npm install
 npm run dev
 ```
 
+## Live Demo
+https://hostel-management-swart.vercel.app/
+
 ## Contributing
 Pull requests welcome. Please follow coding standards.
 
