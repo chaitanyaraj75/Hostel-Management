@@ -3,6 +3,7 @@ import { Listbox, Transition } from '@headlessui/react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import server_url from './componenets/server_url.js';
+import ButtonLoader from './componenets/ButtonLoader.jsx';
 
 
 function Register({ setUser }) {
@@ -365,7 +366,7 @@ function Register({ setUser }) {
                                     : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 focus:ring-blue-500 hover:scale-[1.02] border border-transparent'
                                 }`}
                         >
-                            {loading ? 'Registering...' : 'Register'}
+                            {loading ? <ButtonLoader/> : 'Register'}
                         </button>
                     </form>
                     <div className="mt-6 text-center">
