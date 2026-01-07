@@ -3,10 +3,8 @@ import { useState, useEffect } from "react";
 import server_url from "./componenets/server_url.js";
 import ContactModal from "./componenets/ContactModal.jsx";
 import Section from "./componenets/ContactSection.jsx";
+import PageLoader from "./componenets/PageLoader.jsx";
 
-/* =======================
-   Main Page
-======================= */
 function Contacts({ user }) {
     const [members, setMembers] = useState({
         administration: [],
@@ -68,7 +66,7 @@ function Contacts({ user }) {
         setShowModal(true);
     };
 
-    if (loading) return <div className="p-6">Loading contact page...</div>;
+    if (loading) return <PageLoader />
     if (error) return <div className="p-6 text-red-600">{error}</div>;
 
     return (

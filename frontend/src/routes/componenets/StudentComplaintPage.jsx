@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import server_url from "./server_url.js";
 import axios from "axios";
 import PageLoader from './PageLoader.jsx';
+import ButtonLoader from './ButtonLoader.jsx';
 
 function StudentComplaintPage({ user }) {
     const [complaints, setComplaints] = useState(null);
@@ -166,7 +167,7 @@ function StudentComplaintPage({ user }) {
                                     disabled={buttonloading}
                                     className="w-full cursor-pointer py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-md hover:shadow-lg transition"
                                 >
-                                    {buttonloading ? 'Submitting...' : 'Submit Complaint'}
+                                    {buttonloading ? <ButtonLoader /> : 'Submit Complaint'}
                                 </button>
                             </div>
 

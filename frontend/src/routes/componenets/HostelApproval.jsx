@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState, useEffect, use } from 'react';
 import server_url from "./server_url.js";
+import ButtonLoader from "./ButtonLoader.jsx";
 
 function HostelApproval({ user, hostel, setShowModal }) {
     const [error, setError] = useState(null);
@@ -59,7 +60,7 @@ function HostelApproval({ user, hostel, setShowModal }) {
                     disabled={loading}
                     className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
                 >
-                    {loading ? 'Requesting...' : 'Confirm'}
+                    {loading ? <ButtonLoader /> : 'Confirm'}
                 </button>
             </div>
             {error && <p className="text-red-500 mt-3">{error}</p>}
