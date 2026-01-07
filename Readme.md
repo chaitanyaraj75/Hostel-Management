@@ -18,7 +18,7 @@ A comprehensive hostel management application designed to streamline operations 
 
 ## Installation
 ```bash
-git clone <repository-url>
+git clone https://github.com/chaitanyaraj75/Hostel-Management
 cd "Hostel Management"
 ```
 For backend
@@ -33,6 +33,9 @@ cd "frontend"
 npm install
 npm run dev
 ```
+
+## Live Demo
+https://hostel-management-swart.vercel.app/
 
 ## Contributing
 Pull requests welcome. Please follow coding standards.
