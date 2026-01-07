@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import server_url from "./server_url.js";
 import axios from "axios";
+import PageLoader from './PageLoader.jsx';
 
 function StudentComplaintPage({ user }) {
     const [complaints, setComplaints] = useState(null);
@@ -99,9 +100,7 @@ function StudentComplaintPage({ user }) {
     };
 
     if(loading){
-        return <div className="flex items-center justify-center min-h-screen">
-            <div className="text-gray-600 text-lg">Loading...</div>
-        </div>
+        return <PageLoader />
     }
 
     if(error){

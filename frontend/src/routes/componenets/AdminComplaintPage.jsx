@@ -1,6 +1,7 @@
 import { useState, useEffect, use } from 'react';
 import server_url from "./server_url.js";
 import axios from "axios";
+import PageLoader from './PageLoader.jsx';
 
 function AdminComplaintPage({ user }) {
     const [pendingComplaints, setPendingComplaints] = useState([]);
@@ -73,12 +74,7 @@ function AdminComplaintPage({ user }) {
     };
 
     if(loading){
-        return <div className="min-h-screen flex items-center justify-center">
-            <div className="text-center">
-                <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16 mb-4 mx-auto"></div>
-                <h2 className="text-xl font-semibold">Loading...</h2>
-            </div>
-        </div>
+        return <PageLoader />
     }
 
     if(error){
@@ -93,8 +89,8 @@ function AdminComplaintPage({ user }) {
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-start justify-center p-6">
             <div className="max-w-4xl w-full space-y-6">
                 <div className="text-center">
-                    <h1 className="text-3xl font-bold text-gray-900">Room Requests</h1>
-                    <p className="text-gray-600 mt-1">View all the room requests</p>
+                    <h1 className="text-3xl font-bold text-gray-900">Complaints Page</h1>
+                    <p className="text-gray-600 mt-1">View all the registered complaints</p>
                 </div>
 
                 <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6">

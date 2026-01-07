@@ -2,6 +2,7 @@ import { useState, useEffect, use } from 'react';
 import server_url from "./server_url.js";
 import axios from "axios";
 import HostelApproval from './HostelApproval.jsx';
+import PageLoader from './PageLoader.jsx';
 
 function StudentRooms({ user }) {
     const [formData, setFormData] = useState({
@@ -96,11 +97,7 @@ function StudentRooms({ user }) {
         }
     };
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center"> 
-                <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16"></div>
-            </div>
-        );
+        return <PageLoader />
     }
 
     if(error){

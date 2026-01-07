@@ -13,6 +13,7 @@ import server_url from './routes/componenets/server_url.js';
 import ErrorBoundary from './routes/componenets/ErrorBoundary.jsx';
 import Complaints from './routes/Complaints.jsx';
 import Contacts from './routes/Contacts.jsx';
+import PageLoader from './routes/componenets/PageLoader.jsx';
 
 axios.defaults.withCredentials = true;
 
@@ -37,7 +38,7 @@ function App() {
   }, [])
 
   if (loading) {
-    return <div>Loading...</div>
+    return <PageLoader />
   }
 
   return (

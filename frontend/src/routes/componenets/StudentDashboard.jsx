@@ -4,6 +4,7 @@ import server_url from "./server_url";
 import { useState, useEffect } from "react";
 import GenderAvatar from "./GenderAvatar";
 import menu from "./menu.js"
+import PageLoader from './PageLoader.jsx';
 
 const branch = {
     CSE: 'Computer Science and Engineering',
@@ -42,7 +43,7 @@ function StudentDashboard({ user, setUser }) {
                 params: { student_id: user.student_id }
             });
             const complaints = response.data;
-            console.log("Fetched complaints",complaints)
+            console.log("Fetched complaints", complaints)
             const pending_complaints = complaints.filter(complaint => complaint.status === 'pending');
             // const resolved_complaints = complaints.filter(complaint => complaint.status === 'pending');
             setPendingComplaints(complaints);
@@ -62,7 +63,7 @@ function StudentDashboard({ user, setUser }) {
                 params: { hostel_id: user.hostel_id }
             });
             const room = response.data;
-            console.log("The student Room Detais",response.data);
+            console.log("The student Room Detais", response.data);
             setHostelDetails(room);
         }
         catch (err) {
@@ -71,15 +72,15 @@ function StudentDashboard({ user, setUser }) {
         }
     }
 
-    const fetchRoomRequests=async()=>{
-        try{
-            const response=await axios.get(`${server_url}/api/hostel_rooms/room_requests`);
-            const requests=response.data;
-            const pending_requests=requests.pending_requests
+    const fetchRoomRequests = async () => {
+        try {
+            const response = await axios.get(`${server_url}/api/hostel_rooms/room_requests`);
+            const requests = response.data;
+            const pending_requests = requests.pending_requests
             setPendingRoomRequests(pending_requests);
         }
-        catch(err){
-            console.error("Error fetching room requests:",err);
+        catch (err) {
+            console.error("Error fetching room requests:", err);
             setError("Failed to fetch room requests");
         }
     }
@@ -101,10 +102,10 @@ function StudentDashboard({ user, setUser }) {
 
     useEffect(() => {
         loadAll();
-    },[])
+    }, [])
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <PageLoader />;
     }
     if (error) {
         return <div>Error: {error}</div>;
@@ -121,7 +122,7 @@ function StudentDashboard({ user, setUser }) {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <button onClick={()=>{navigate("/login")}} className="px-4 py-2 bg-blue-600 rounded-full text-sm font-semibold cursor-pointer hover:bg-blue-700 text-white">
+                        <button onClick={() => { navigate("/login") }} className="px-4 py-2 bg-blue-600 rounded-full text-sm font-semibold cursor-pointer hover:bg-blue-700 text-white">
                             Login
                         </button>
                         <button onClick={handleLogout} className="px-4 py-2 bg-red-600 rounded-full text-sm font-semibold cursor-pointer hover:bg-red-700 text-white">
@@ -187,7 +188,7 @@ function StudentDashboard({ user, setUser }) {
                             <h3 className="font-semibold mb-3">Quick Actions</h3>
                             <div className="grid grid-cols-1 gap-3">
                                 {menu.map((m) => (
-                                    <a key={m} href={m=='Dashboard'?'/':`/${m.toLowerCase()}`} className="block px-4 py-3 rounded-lg bg-gradient-to-r from-blue-50 to-white hover:from-blue-100 text-gray-800 font-medium">
+                                    <a key={m} href={m == 'Dashboard' ? '/' : `/${m.toLowerCase()}`} className="block px-4 py-3 rounded-lg bg-gradient-to-r from-blue-50 to-white hover:from-blue-100 text-gray-800 font-medium">
                                         {m}
                                     </a>
                                 ))}

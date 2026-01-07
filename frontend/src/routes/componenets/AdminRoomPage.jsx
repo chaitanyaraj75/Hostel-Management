@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import server_url from "./server_url.js";
 import axios from "axios";
+import PageLoader from './PageLoader.jsx';
+
 //Error handling and loading states to be added
 function AdminRoomPage({ user }) {
     const [pendingRoomRequests, setPendingRoomRequests] = useState([]);
@@ -77,7 +79,7 @@ function AdminRoomPage({ user }) {
         LoadAll();
     }, []);
 
-    if (loading) return <p className="p-6">Loading room requests...</p>;
+    if (loading) return <PageLoader />
     if (error) return <p className="p-6 text-red-600">Error: {String(error)}</p>;
 
     return (

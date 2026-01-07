@@ -4,6 +4,7 @@ import axios from "axios";
 import server_url from "./server_url";
 import { useState, useEffect } from "react";
 import menu from "./menu.js"
+import PageLoader from "./PageLoader.jsx";
 
 const hostels = ['Subhash', 'Raman', 'Tilak', 'Saraswati', 'Kalpana'];
 const hostel_colors = ['#2563EB', '#FACC15', '#EC4899', '#10B981', '#8B5CF6'];
@@ -107,7 +108,8 @@ function AdminDashboard({ user, setUser }) {
     }, []);
 
     if(loading){
-        return <div>Loading Admin Page...</div>;
+        return <PageLoader />
+        // return <div>Loading Admin Page...</div>;
     }
 
     if(error){
