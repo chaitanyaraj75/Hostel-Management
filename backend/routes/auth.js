@@ -48,8 +48,8 @@ router.post('/register', async (req, res) => {
             [name,student_id,email,mobile_no,hashedPassword,branch,year,gender]
         )
         const token=generateToken(newUser.rows[0].id);
-        res.cookie('token',token,cookieOptions)
-        return res.status(201).json({user:newUser.rows[0]});
+        res.cookie('token',token,cookieOptions); // For backward compatibility
+        return res.status(201).json({user:newUser.rows[0], token:token});
     }
     catch (err) {
         console.error("Error during registration:", err);
@@ -82,8 +82,8 @@ router.post('/login',async (req,res)=>{
             return res.status(400).json({message:"Incorrect password"});
         }
         const token=generateToken(userData.id)
-        res.cookie('token',token,cookieOptions);
-        res.json({user:userData}); //200 ok
+        res.cookie('token',token,cookieOptions); // For backward compatibility
+        res.json({user:userData, token:token}); //200 ok
     }
     catch(err){
         console.error("Error during Logging in:", err);

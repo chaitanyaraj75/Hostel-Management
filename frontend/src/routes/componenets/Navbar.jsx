@@ -12,6 +12,8 @@ function Navbar({ user, setUser }) {
         if (e && e.preventDefault) e.preventDefault();
         try {
             await axios.post(`${server_url}/api/auth/logout`);
+            // Clear token from localStorage
+            localStorage.removeItem('token');
             setUser(null);
             navigate('/login');
         } catch (error) {

@@ -17,6 +17,17 @@ import PageLoader from './routes/componenets/PageLoader.jsx';
 
 axios.defaults.withCredentials = true;
 
+// Setup axios interceptor to include token in all requests
+axios.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+}, (error) => {
+  return Promise.reject(error);
+});
+
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);

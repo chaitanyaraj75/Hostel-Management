@@ -41,6 +41,10 @@ function Login({ setUser }) {
             setLoading(true)
             const response = await axios.post(`${server_url}/api/auth/login`, formData);
             console.log('Fetched user:', response);
+            // Store token in localStorage
+            if (response.data.token) {
+                localStorage.setItem('token', response.data.token);
+            }
             setUser(response.data.user);
             navigate('/');
         }

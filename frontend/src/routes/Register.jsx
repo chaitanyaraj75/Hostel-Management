@@ -58,6 +58,10 @@ function Register({ setUser }) {
             setLoading(true);
             const response = await axios.post(`${server_url}/api/auth/register`, formData);
             console.log('Registered user:', response);
+            // Store token in localStorage
+            if (response.data.token) {
+                localStorage.setItem('token', response.data.token);
+            }
             setUser(response.data.user);
             navigate('/');
         }

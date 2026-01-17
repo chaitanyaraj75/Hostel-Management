@@ -12,9 +12,6 @@
 // });
 
 
-
-// export default pool;
-
 import pkg from "pg";
 const { Pool } = pkg;
 import dotenv from "dotenv";

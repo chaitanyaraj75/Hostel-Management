@@ -3,7 +3,18 @@ import pool from '../config/db.js';
 
 export const protect = async (req, res, next) => {
     try{
-        const token = req.cookies.token;
+        // Try to get token from Authorization header first (for mobile/modern clients)
+        let token = null;
+        const authHeader = req.headers.authorization;
+        
+        if(authHeader && authHeader.startsWith('Bearer ')){
+            token = authHeader.slice(7); // Remove 'Bearer ' prefix
+        }
+        // Fallback to cookies for backward compatibility
+        else if(req.cookies.token){
+            token = req.cookies.token;
+        }
+        
         if(!token){
             return res.status(401).json({ message: "No token, authorization denied" });
         }
