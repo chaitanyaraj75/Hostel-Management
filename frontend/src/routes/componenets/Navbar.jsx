@@ -26,7 +26,11 @@ function Navbar({ user, setUser }) {
     return (
         <header className="w-full bg-white border-b p-2 shadow relative">
             <div className="max-w-6xl mx-auto w-full flex items-center justify-between px-4 h-16">
-                <div className="flex items-center space-x-3">
+                <div
+                    className="flex items-center space-x-3"
+                    onClick={() => navigate('/')}
+                    style={{ cursor: 'pointer' }}
+                >
                     <div className="h-10 w-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">H</div>
                     <span className="text-lg font-semibold text-gray-800">Hostel Management</span>
                 </div>
