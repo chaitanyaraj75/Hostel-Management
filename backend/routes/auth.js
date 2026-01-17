@@ -102,4 +102,40 @@ router.post('/logout',(req,res)=>{
     res.json({message:"Logged out successfully"});
 });
 
+// Forgot Route
+router.post('/forgot', async (req, res) => {
+    const { email, student_id,password } = req.body;
+    console.log(req.body);
+    if( !student_id || !email ||!password ) {
+        return res.status(400).json({ message: "Please fill all the fields" });
+    }
+
+    try {
+        const userExists = await pool.query(
+            'SELECT student_id,email FROM users WHERE student_id = $1',
+            [student_id]
+        );
+        console.log(userExists.rows);
+        if (userExists.rows.length == 0) {
+            return res.status(400).json({ message: "User doesn't exist" });
+        }
+        const user=userExists.rows[0];
+        if(user.email!==email){
+            return res.status(400).json({ message: "Email doesn't match" });
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const updateUser=await pool.query(
+            'UPDATE users SET password=$1 WHERE student_id=$2 RETURNING id,name,student_id,email',
+            [hashedPassword,student_id]
+        )
+        // const token=generateToken(updateUser.rows[0].id);
+        // res.cookie('token',token,cookieOptions); // For backward compatibility
+        return res.status(201).json({message:"Password updated successfully"});
+    }
+    catch (err) {
+        console.error("Error during password update:", err);
+        res.status(500).json({ message: "Server error in forgot password" });
+    }
+});
+
 export default router;

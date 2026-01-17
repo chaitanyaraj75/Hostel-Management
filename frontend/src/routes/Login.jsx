@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from "./componenets/Navbar";
 import server_url from './componenets/server_url.js';
 import ButtonLoader from './componenets/ButtonLoader.jsx';
+import ResetPassword from './componenets/ResetPassword.jsx';
 
 function Login({ setUser }) {
     const [user_type, setLoginType] = useState('student');
@@ -16,6 +17,7 @@ function Login({ setUser }) {
     const [error, setError] = useState("");
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [forgotPassword, setForgotPassword] = useState(false);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -58,7 +60,7 @@ function Login({ setUser }) {
                 setError("Login failed. Please try again.");
             }
         }
-        finally{
+        finally {
             setLoading(false);
         }
     };
@@ -175,9 +177,16 @@ function Login({ setUser }) {
                             </div>
 
                             <div className="flex items-center justify-end">
-                                <a href="#" className="text-sm text-blue-600 hover:text-blue-500 font-medium">
+                                <a
+                                    className="text-sm text-blue-600 hover:text-blue-500 font-medium cursor-pointer"
+                                    onClick={() => setForgotPassword(true)}
+                                >
                                     Forgot password?
                                 </a>
+                                {forgotPassword && <ResetPassword
+                                    setForgotPassword={setForgotPassword} 
+                                    setLoginError={setError}
+                                />}
                             </div>
 
                             <button
@@ -185,7 +194,7 @@ function Login({ setUser }) {
                                 disabled={loading}
                                 className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 transform hover:scale-[1.02]"
                             >
-                                {loading? <ButtonLoader/>: user_type === 'student' ? 'Sign in as Student' : 'Sign in as Admin'}
+                                {loading ? <ButtonLoader /> : user_type === 'student' ? 'Sign in as Student' : 'Sign in as Admin'}
                             </button>
                             {error && <p className="text-red-500 text-sm mt-4 text-center">{error}</p>}
                         </form>
